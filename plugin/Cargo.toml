@@ -1,0 +1,15 @@
+[package]
+name = "bevy-remote-devtools-plugin"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = { git = "https://github.com/bevyengine/bevy.git", branch = "main", features = ["trace","bevy_render2", "bevy_pbr2", "bevy_core_pipeline"] }
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tracing-serde = "0.1"
+rweb = { version = "0.15", features = ["openapi","chrono"] }
+chrono = { version = "0.4", features = ["serde"] }
+lazy_static = "1.4"
+tokio = "1"
+libmdns = "0.6"
