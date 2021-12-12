@@ -1,7 +1,8 @@
 import React from 'react';
 import { Alert, AlertTitle } from "@mui/material";
-import { BrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useApiHost } from "../api";
+import { EventsView } from '../views/Events';
 
 export function Router(): React.ReactElement {
   const host = useApiHost();
@@ -15,7 +16,8 @@ export function Router(): React.ReactElement {
   }
 
   return (
-    <BrowserRouter key={host}>
-    </BrowserRouter>
+    <Routes key={host}>
+      <Route path="/" element={<EventsView />} />
+    </Routes>
   );
 }

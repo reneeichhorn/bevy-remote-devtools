@@ -56,6 +56,8 @@ impl Subscriber for TracingSubscriber {
         if event.metadata().target().contains("wgpu")
             || event.metadata().target().contains("warp")
             || event.metadata().target().contains("hyper")
+            || event.metadata().target().contains("draw_state")
+            || event.metadata().target().contains("diagnostic")
             || *event.metadata().level() == Level::TRACE
         {
             return;
