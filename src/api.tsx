@@ -22,9 +22,17 @@ interface RequestSettings<T> {
   body?: T,
 }
 
-export async function doApiRequest<T>(host: string, endpoint: string, settings: RequestSettings<T>): Promise<T> {
+export async function doApiRequest<T, S = void>(
+  host: string,
+  endpoint: string,
+  settings: RequestSettings<S>
+): Promise<T> {
   const request = await fetch(`http://${host}${endpoint}`, {
     method: settings.method,
+    mode: 'cors',
+    headers: settings.body ? {
+      'Content-Type': 'application/json',
+    } : undefined,
     body: settings.body ? JSON.stringify(settings.body) : undefined,
   });
   return await request.json();
@@ -35,23 +43,23 @@ interface RequestOutput<T> {
   refetch: () => void,
 }
 
-export function useDoApiRequest(): <T>(endpoint: string, settings: RequestSettings<T>) => Promise<T> {
+export function useDoApiRequest(): <T, S>(endpoint: string, settings: RequestSettings<S>) => Promise<T> {
   const host = useApiHost();
   return useCallback((endpoint, settings) => {
     return doApiRequest(host, endpoint, settings);
   }, [host]);
 }
 
-export function useApiRequest<T>(
+export function useApiRequest<T, S>(
   endpoint: string,
-  settings: RequestSettings<T>,
+  settings: RequestSettings<S>,
   deps: React.DependencyList = [],
 ): RequestOutput<T> {
   const [data, setData] = useState<T>(null);
   const host = useApiHost();
 
   const fetch = async () => {
-    const output = await doApiRequest(host, endpoint, settings);
+    const output = await doApiRequest<T, S>(host, endpoint, settings);
     setData(output);
   };
 

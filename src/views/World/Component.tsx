@@ -1,5 +1,6 @@
-import { Checkbox, FormControl, Grid, Input, InputAdornment, Typography} from '@mui/material';
+import { Button, Checkbox, FormControl, Grid, Input, InputAdornment, Typography} from '@mui/material';
 import React from 'react';
+import { useAssetViewer } from '../../components/AssetViewer';
 import { Component, parseRustTypeGenerics } from "./serialization";
 
 interface PropertyProps<T> {
@@ -66,6 +67,19 @@ function OptionProperty({ value, generics }: PropertyProps<unknown>): React.Reac
   );
 }
 
+function AssetProperty({ value }: PropertyProps<string>): React.ReactElement {
+  const assetViewer = useAssetViewer();
+  return (
+    <>
+      <Button 
+        onClick={() => assetViewer.showAsset({ type: 'Mesh', id: value})}
+      >
+        View as Mesh
+      </Button>
+    </>
+  );
+}
+
 const COMPONENT_TYPE_MAP = {
   'bool': BoolProperty,
   'f32': VectorProperty,
@@ -78,6 +92,7 @@ const COMPONENT_TYPE_MAP = {
   'glam::vec3::Vec3': VectorProperty,
   'glam::vec4::Vec4': VectorProperty,
   'glam::quat::Quat': VectorProperty,
+  'bevy_asset::handle::HandleId': AssetProperty,
 };
 
 interface TypeRendererProps {

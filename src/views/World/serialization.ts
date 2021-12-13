@@ -51,7 +51,6 @@ export function parseRustTypeGenerics(ty: string): RustTypePath {
       generics: '',
     };
   }
-  console.warn('mat', matches);
   return {
     component: matches[1],
     generics: matches[2].slice(1, matches[2].length - 1),

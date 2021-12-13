@@ -1,10 +1,13 @@
-use bevy::{prelude::*, reflect::TypeRegistry, scene::serde::SceneSerializer, window::Windows};
+use bevy::{
+    prelude::DynamicScene, reflect::TypeRegistry, scene::serde::SceneSerializer, window::Windows,
+};
 use rweb::*;
 use serde::Serialize;
 use std::{convert::Infallible, sync::Mutex};
 
 use crate::{
-    assets::assets,
+    assets::{assets, get_asset_mesh},
+    serialization::NumberToStringSerializer,
     sync::execute_in_world,
     tracing::{StoredEvent, STORED_EVENTS},
 };
@@ -40,7 +43,7 @@ async fn world() -> Result<String, Infallible> {
         let type_registry = world.get_resource::<TypeRegistry>().unwrap();
         let scene = DynamicScene::from_world(world, type_registry);
         let serializer = SceneSerializer::new(&scene, type_registry);
-        serde_json::to_string(&serializer).unwrap()
+        serde_json::to_string(&NumberToStringSerializer(serializer)).unwrap()
     })
     .await;
 
@@ -48,17 +51,36 @@ async fn world() -> Result<String, Infallible> {
 }
 
 #[get("/v1/tracing/events")]
-#[cors(origins("*"))]
+#[cors(origins("*"), headers("content-type"))]
 fn poll_tracing_events() -> Json<Vec<StoredEvent>> {
     let events = STORED_EVENTS.lock().unwrap();
     events.iter().cloned().collect::<Vec<_>>().into()
 }
 
 async fn api_main() {
-    let (spec, filter) =
-        openapi::spec().build(move || poll_tracing_events().or(info()).or(world()).or(assets()));
+    let (spec, filter) = openapi::spec().build(move || {
+        poll_tracing_events()
+            .or(info())
+            .or(world())
+            .or(assets())
+            .or(get_asset_mesh())
+    });
 
-    serve(filter.or(openapi_docs(spec)))
+    let cors = warp::cors()
+        .allow_any_origin()
+        .allow_headers(vec![
+            "User-Agent",
+            "Sec-Fetch-Mode",
+            "Referer",
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers",
+            "Content-Type",
+        ])
+        .allow_methods(vec!["POST", "GET"])
+        .build();
+
+    serve(filter.or(openapi_docs(spec)).with(cors))
         .run(([0, 0, 0, 0], 3030))
         .await;
 }

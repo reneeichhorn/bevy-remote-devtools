@@ -26,6 +26,7 @@ import { ClientSelect } from './components/ClientSelect';
 import { Router } from './components/Router';
 import { HashRouter, Link } from 'react-router-dom';
 import { ApiProvider } from './api';
+import { AssetViewerProvider } from './components/AssetViewer';
 
 const darkTheme = createTheme({
   palette: {
@@ -91,80 +92,82 @@ export function App(): React.ReactElement {
         <CssBaseline />
         <ThemeProvider theme={darkTheme}>
           <Root>
-            <StyledAppBar position="sticky" $shifted={open}>
-              <Toolbar>
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={() => setOpen(!open)}
-                  edge="start"
-                  sx={{ display: open ? "hidden" : 'initial'}}
-                >
-                  <MenuIcon />
-                </IconButton>
-                <ClientSelect />
-              </Toolbar>
-            </StyledAppBar>
+            <AssetViewerProvider>
+              <StyledAppBar position="sticky" $shifted={open}>
+                <Toolbar>
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={() => setOpen(!open)}
+                    edge="start"
+                    sx={{ display: open ? "hidden" : 'initial'}}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <ClientSelect />
+                </Toolbar>
+              </StyledAppBar>
 
-            <StyledDrawer
-              variant="persistent"
-              anchor="left"
-              open={open}
-            >
-              <DrawerHeader>
-                <IconButton onClick={() => setOpen(!open)}>
-                  <ChevronLeftIcon />
-                </IconButton>
-              </DrawerHeader>
+              <StyledDrawer
+                variant="persistent"
+                anchor="left"
+                open={open}
+              >
+                <DrawerHeader>
+                  <IconButton onClick={() => setOpen(!open)}>
+                    <ChevronLeftIcon />
+                  </IconButton>
+                </DrawerHeader>
 
-              <Divider />
-
-              <List>
-                <ListItem button component={Link} to="/">
-                  <ListItemIcon>
-                    <FormatAlignCenterIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Tracing Events" />
-                </ListItem>
                 <Divider />
-                <ListItem button>
-                  <ListItemIcon>
-                    <AccountTreeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Render Graph" />
-                </ListItem>
-                <ListItem button>
-                  <ListItemIcon>
-                    <AccountTreeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Schedule Graph" />
-                </ListItem>
-                <Divider />
-                <ListItem button>
-                  <ListItemIcon>
-                    <ViewInArIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Assets" />
-                </ListItem>
-                <ListItem button component={Link} to="/world">
-                  <ListItemIcon>
-                    <PublicIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Entities" />
-                </ListItem>
-                <Divider />
-                <ListItem button>
-                  <ListItemIcon>
-                    <AutoGraphIcon/>
-                  </ListItemIcon>
-                  <ListItemText primary="System Profiler" />
-                </ListItem>
-              </List>
-            </StyledDrawer>
 
-            <Main $shifted={open}>
-              <Router />
-            </Main>
+                <List>
+                  <ListItem button component={Link} to="/">
+                    <ListItemIcon>
+                      <FormatAlignCenterIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Tracing Events" />
+                  </ListItem>
+                  <Divider />
+                  <ListItem button>
+                    <ListItemIcon>
+                      <AccountTreeIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Render Graph" />
+                  </ListItem>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <AccountTreeIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Schedule Graph" />
+                  </ListItem>
+                  <Divider />
+                  <ListItem button component={Link} to="/assets">
+                    <ListItemIcon>
+                      <ViewInArIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Assets" />
+                  </ListItem>
+                  <ListItem button component={Link} to="/world">
+                    <ListItemIcon>
+                      <PublicIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Entities" />
+                  </ListItem>
+                  <Divider />
+                  <ListItem button>
+                    <ListItemIcon>
+                      <AutoGraphIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary="System Profiler" />
+                  </ListItem>
+                </List>
+              </StyledDrawer>
+
+              <Main $shifted={open}>
+                <Router />
+              </Main>
+            </AssetViewerProvider>
           </Root>
         </ThemeProvider>
       </ApiProvider>

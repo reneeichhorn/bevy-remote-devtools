@@ -104,7 +104,7 @@ export function renderEntityNode(
 }
 
 export function WorldView(): React.ReactElement {
-  const { data: entities, refetch: refetchEntities } = useApiRequest<Entity[]>(
+  const { data: entities, refetch: refetchEntities } = useApiRequest<Entity[], void>(
     '/v1/world', { method: 'GET' }
   );
   const world = useMemo<EntityNode[]>(() => unflattenEntities(entities || []), [entities]);

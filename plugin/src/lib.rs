@@ -4,6 +4,7 @@ use sync::execute_world_tasks;
 mod api;
 mod assets;
 //mod graph;
+mod serialization;
 mod sync;
 mod tracing;
 

@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import { useApiHost } from "../api";
 import { EventsView } from '../views/Events';
 import { WorldView } from '../views/World';
+import { AssetsView } from '../views/Assets';
 
 export function Router(): React.ReactElement {
   const host = useApiHost();
@@ -20,6 +21,7 @@ export function Router(): React.ReactElement {
     <Routes key={host}>
       <Route path="/" element={<EventsView />} />
       <Route path="/world" element={<WorldView />} />
+      <Route path="/assets" element={<AssetsView />} />
     </Routes>
   );
 }

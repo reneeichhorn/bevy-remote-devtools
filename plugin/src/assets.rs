@@ -1,15 +1,22 @@
 use std::convert::Infallible;
 
-use bevy::{asset::HandleId, prelude::*, render2::mesh::Mesh};
-use rweb::*;
+use bevy::{
+    asset::HandleId,
+    prelude::{AssetServer, Assets},
+    render2::mesh::{Indices, Mesh, VertexAttributeValues},
+};
+use rweb::{
+    reject::{custom, Reject},
+    *,
+};
 use serde::Serialize;
 
-use crate::sync::execute_in_world;
+use crate::{serialization::StringHandleId, sync::execute_in_world};
 
 #[derive(Serialize, Debug)]
 struct AssetOverview {
     name: String,
-    id: HandleId,
+    id: StringHandleId,
     ty: AssetType,
 }
 
@@ -53,7 +60,7 @@ pub(crate) async fn assets() -> Result<Json<Vec<AssetOverview>>, Infallible> {
                     assets.push(AssetOverview {
                         name: get_asset_name(server, id),
                         ty: AssetType::Mesh,
-                        id,
+                        id: id.into(),
                     });
                 }
             }
@@ -73,12 +80,44 @@ struct MeshAsset {
 
 #[post("/v1/assets/mesh")]
 #[cors(origins("*"))]
-pub(crate) async fn get_asset_mesh(#[json] id: HandleId) -> Result<String, Infallible> {
-    let _handle = Handle::<Mesh>::weak(id);
-    /*
-    let vertices = Vec::new();
-    let indices = Vec::new();
-    */
+pub(crate) async fn get_asset_mesh(
+    #[json] id: StringHandleId,
+) -> Result<Json<MeshAsset>, rweb::Rejection> {
+    let id: HandleId = id.into();
+    let mesh = execute_in_world(move |world| {
+        let meshes = world.get_resource::<Assets<Mesh>>();
+        meshes.map(|meshes| meshes.get(id).cloned()).flatten()
+    })
+    .await;
 
-    Ok("".to_string())
+    if let Some(mesh) = mesh {
+        let vertices = if let Some(VertexAttributeValues::Float32x3(values)) =
+            mesh.attribute(Mesh::ATTRIBUTE_POSITION)
+        {
+            values.clone()
+        } else {
+            return Err(custom(AssetMeshErrors::UnsupportedFormat));
+        };
+
+        let mut indices = Vec::new();
+        match mesh.indices() {
+            Some(Indices::U16(raw)) => indices.extend(raw.iter().map(|i| *i as u32)),
+            Some(Indices::U32(raw)) => indices.extend(raw),
+            _ => {
+                return Err(custom(AssetMeshErrors::UnsupportedFormat));
+            }
+        }
+
+        return Ok(MeshAsset { vertices, indices }.into());
+    }
+
+    Err(custom(AssetMeshErrors::NotFound))
 }
+
+#[allow(dead_code)]
+#[derive(Debug)]
+enum AssetMeshErrors {
+    NotFound,
+    UnsupportedFormat,
+}
+impl Reject for AssetMeshErrors {}

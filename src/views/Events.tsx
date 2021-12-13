@@ -26,7 +26,7 @@ export function EventsView(): React.ReactElement {
 
   useEffect(() => {
     const request = async () => {
-      const events = await apiRequest<Event[]>('/v1/tracing/events', { method: 'GET' });
+      const events = await apiRequest<Event[], void>('/v1/tracing/events', { method: 'GET' });
       setEvents(events.filter(e => !exclusionList.includes(e.target)));
     };
     request();
