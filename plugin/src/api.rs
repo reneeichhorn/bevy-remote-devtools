@@ -6,7 +6,7 @@ use std::{convert::Infallible, sync::Mutex};
 use crate::{
     assets::assets,
     sync::execute_in_world,
-    tracing::{StoredEvent, PENDING_EVENTS},
+    tracing::{StoredEvent, STORED_EVENTS},
 };
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -47,12 +47,11 @@ async fn world() -> Result<String, Infallible> {
     Ok(json)
 }
 
-#[get("/v1/tracing/events/poll")]
+#[get("/v1/tracing/events")]
 #[cors(origins("*"))]
 fn poll_tracing_events() -> Json<Vec<StoredEvent>> {
-    let mut events = PENDING_EVENTS.lock().unwrap();
-    let all: Vec<StoredEvent> = events.drain(..).collect();
-    all.into()
+    let events = STORED_EVENTS.lock().unwrap();
+    events.iter().cloned().collect::<Vec<_>>().into()
 }
 
 async fn api_main() {
@@ -64,7 +63,7 @@ async fn api_main() {
         .await;
 }
 
-pub(crate) fn start_api() {
+pub(crate) fn start() {
     // Run mdns responder to advertise itself on the network.
     let _ = std::thread::spawn(|| {
         let responder = libmdns::Responder::new().unwrap();

@@ -20,17 +20,17 @@ pub(crate) fn register() {
     .unwrap();
 }
 
-#[derive(Serialize, Debug, Schema)]
+#[derive(Serialize, Debug, Schema, Clone)]
 pub(crate) struct StoredEvent {
     target: String,
     time: DateTime<Utc>,
     record: StoredRecord,
 }
 
-const MAX_EVENTS: usize = 250;
+const MAX_EVENTS: usize = 300;
 
 lazy_static::lazy_static! {
-  pub(crate) static ref PENDING_EVENTS: Mutex<VecDeque<StoredEvent>> = {
+  pub(crate) static ref STORED_EVENTS: Mutex<VecDeque<StoredEvent>> = {
     Mutex::new(VecDeque::with_capacity(MAX_EVENTS))
   };
 }
@@ -38,18 +38,7 @@ lazy_static::lazy_static! {
 impl Subscriber for TracingSubscriber {
     fn new_span(&self, _attrs: &Attributes<'_>) -> Id {
         let id = self.next_id.fetch_add(1, Ordering::Relaxed);
-        let id = Id::from_u64(id as u64);
-        /*
-        if !attrs.metadata().target().contains("wgpu") {
-          let json = json!({
-          "new_span": {
-              "attributes": attrs.as_serde(),
-              "id": id.as_serde(),
-          }});
-          println!("{}", json);
-        }
-        */
-        id
+        Id::from_u64(id as u64)
     }
 
     fn event(&self, event: &Event<'_>) {
@@ -63,7 +52,7 @@ impl Subscriber for TracingSubscriber {
             return;
         }
 
-        if let Ok(mut events) = PENDING_EVENTS.lock() {
+        if let Ok(mut events) = STORED_EVENTS.lock() {
             if events.len() == MAX_EVENTS {
                 events.pop_back();
             }
@@ -90,7 +79,7 @@ impl Subscriber for TracingSubscriber {
     fn exit(&self, _span: &span::Id) {}
 }
 
-#[derive(Serialize, Debug, Schema)]
+#[derive(Serialize, Debug, Schema, Clone)]
 pub(crate) struct StoredRecord {
     properties: HashMap<String, String>,
 }

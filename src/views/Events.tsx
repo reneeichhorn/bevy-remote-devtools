@@ -25,10 +25,12 @@ export function EventsView(): React.ReactElement {
   const apiRequest = useDoApiRequest();
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      const events = await apiRequest<Event[]>('/v1/tracing/events/poll', { method: 'GET' });
-      setEvents(prevEvents => [...events.filter(e => !exclusionList.includes(e.target)), ...prevEvents]);
-    }, 2000);
+    const request = async () => {
+      const events = await apiRequest<Event[]>('/v1/tracing/events', { method: 'GET' });
+      setEvents(events.filter(e => !exclusionList.includes(e.target)));
+    };
+    request();
+    const interval = setInterval(request, 2000);
 
     return () => {
       clearInterval(interval);
@@ -37,7 +39,7 @@ export function EventsView(): React.ReactElement {
 
   return (
     <>
-      <Typography color="primary" variant="h4">Events</Typography>
+      <Typography color="primary" variant="h4">Tracing Events</Typography>
       <Card sx={{ padding: 1, marginTop: 2 }}>
         <Table sx={{ marginTop: 1}} >
           <TableHead>

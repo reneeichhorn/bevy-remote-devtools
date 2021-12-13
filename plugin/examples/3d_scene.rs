@@ -1,7 +1,3 @@
-#![feature(bench_black_box)]
-
-use std::hint::black_box;
-
 use bevy::{
     core::Time,
     diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
@@ -25,6 +21,7 @@ use bevy_remote_devtools_plugin::*;
 
 fn main() {
     App::new()
+        .add_plugin(RemoteDevToolsPlugin)
         .add_plugins_with(PipelinedDefaultPlugins, |group| {
             group.disable::<LogPlugin>()
         })
@@ -33,7 +30,7 @@ fn main() {
         .add_startup_system(setup)
         .add_system(movement)
         .add_system(animate_light_direction)
-        .run_with_dev_tools();
+        .run();
 }
 
 #[derive(Component)]

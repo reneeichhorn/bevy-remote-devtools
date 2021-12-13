@@ -24,7 +24,7 @@ import PublicIcon from '@mui/icons-material/Public';
 
 import { ClientSelect } from './components/ClientSelect';
 import { Router } from './components/Router';
-import { BrowserRouter, Link } from 'react-router-dom';
+import { HashRouter, Link } from 'react-router-dom';
 import { ApiProvider } from './api';
 
 const darkTheme = createTheme({
@@ -86,12 +86,12 @@ export function App(): React.ReactElement {
   const [open, setOpen] = useState(true);
 
   return (
-    <BrowserRouter>
+    <HashRouter >
       <ApiProvider>
         <CssBaseline />
         <ThemeProvider theme={darkTheme}>
           <Root>
-            <StyledAppBar position="static" $shifted={open}>
+            <StyledAppBar position="sticky" $shifted={open}>
               <Toolbar>
                 <IconButton
                   color="inherit"
@@ -168,6 +168,6 @@ export function App(): React.ReactElement {
           </Root>
         </ThemeProvider>
       </ApiProvider>
-    </BrowserRouter>
+    </HashRouter>
   )
 }

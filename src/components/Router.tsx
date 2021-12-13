@@ -3,6 +3,7 @@ import { Alert, AlertTitle } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import { useApiHost } from "../api";
 import { EventsView } from '../views/Events';
+import { WorldView } from '../views/World';
 
 export function Router(): React.ReactElement {
   const host = useApiHost();
@@ -18,6 +19,7 @@ export function Router(): React.ReactElement {
   return (
     <Routes key={host}>
       <Route path="/" element={<EventsView />} />
+      <Route path="/world" element={<WorldView />} />
     </Routes>
   );
 }

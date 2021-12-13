@@ -32,6 +32,7 @@ export async function doApiRequest<T>(host: string, endpoint: string, settings: 
 
 interface RequestOutput<T> {
   data?: T,
+  refetch: () => void,
 }
 
 export function useDoApiRequest(): <T>(endpoint: string, settings: RequestSettings<T>) => Promise<T> {
@@ -41,25 +42,27 @@ export function useDoApiRequest(): <T>(endpoint: string, settings: RequestSettin
   }, [host]);
 }
 
-export async function useApiRequest<T>(
+export function useApiRequest<T>(
   endpoint: string,
   settings: RequestSettings<T>,
   deps: React.DependencyList = [],
-): Promise<RequestOutput<T>> {
+): RequestOutput<T> {
   const [data, setData] = useState<T>(null);
   const host = useApiHost();
 
+  const fetch = async () => {
+    const output = await doApiRequest(host, endpoint, settings);
+    setData(output);
+  };
+
   useEffect(() => {
-    const cb = async () => {
-      const output = await doApiRequest(host, endpoint, settings);
-      setData(output);
-    };
-    cb();
+    fetch();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [host, ...deps]);
 
   return {
     data,
+    refetch: fetch,
   }
 }
 

@@ -74,7 +74,7 @@ struct MeshAsset {
 #[post("/v1/assets/mesh")]
 #[cors(origins("*"))]
 pub(crate) async fn get_asset_mesh(#[json] id: HandleId) -> Result<String, Infallible> {
-    let handle = Handle::<Mesh>::weak(id);
+    let _handle = Handle::<Mesh>::weak(id);
     /*
     let vertices = Vec::new();
     let indices = Vec::new();
