@@ -1,11 +1,11 @@
 {
-  "name": "tauri-typescript-react-boilerplate",
-  "version": "1.0.0",
+  "name": "bevy-remote-devtools",
+  "version": "0.1.0",
   "private": true,
-  "description": "A Tauri Typescript React Boilerplate that works out of the box.",
+  "description": "A remote developer tool for bevy applications",
   "keywords": [],
   "license": "MIT",
-  "author": "Nate Adams",
+  "author": "Rene Eichhorn",
   "scripts": {
     "prebuild": "rimraf ./dist",
     "build:fe": "webpack --production",
