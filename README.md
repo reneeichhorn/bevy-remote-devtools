@@ -1,5 +1,7 @@
 # bevy-remote-devtools
 
+![Small preview video showing the features listed below](./docs/preview.gif)
+
 A toolset that allows you to debug / view any bevy application with a tauri based UI.
 
 ## Features
