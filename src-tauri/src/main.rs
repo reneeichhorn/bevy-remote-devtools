@@ -6,8 +6,12 @@
 mod discovery;
 
 use discovery::*;
+use log::info;
 
 fn main() {
+  env_logger::init();
+  info!("Starting tauri...");
+
   tauri::Builder::default()
     .manage(discovery::ClientDiscovery::new())
     .invoke_handler(tauri::generate_handler![get_clients])

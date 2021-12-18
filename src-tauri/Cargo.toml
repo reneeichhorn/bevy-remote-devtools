@@ -10,18 +10,16 @@ edition = "2018"
 build = "src/build.rs"
 
 [build-dependencies]
-tauri-build = { version = "1.0.0-beta.4" }
+tauri-build = { git = "https://github.com/tauri-apps/tauri", rev = "d56a7fc7f7d0575061da9ecd70ba23a5ee0bf8e2" }
 
 [dependencies]
+env_logger = "0.8.4"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.0.0-beta.8", features = ["api-all"] }
+tauri = { git = "https://github.com/tauri-apps/tauri", rev = "d56a7fc7f7d0575061da9ecd70ba23a5ee0bf8e2", features = ["api-all"] }
+log = "0.4"
 simple_mdns_client = "3.0.0"
 
 [features]
 default = [ "custom-protocol" ]
 custom-protocol = [ "tauri/custom-protocol" ]
-
-[[bin]]
-name = "app"
-path = "src/main.rs"
