@@ -3,9 +3,16 @@ use std::sync::{Arc, Mutex};
 use bevy::prelude::World;
 use tokio::sync::Notify;
 
-pub(crate) fn execute_world_tasks(world: &mut World) {
-    let receiver = CHANNEL.1.lock().unwrap();
-    if let Ok(task) = receiver.try_recv() {
+pub(crate) fn execute_world_tasks_begin(world: &mut World) {
+    let receiver = CHANNEL_FRAME_START.1.lock().unwrap();
+    while let Ok(task) = receiver.try_recv() {
+        (task.task)(world);
+    }
+}
+
+pub(crate) fn execute_world_tasks_end(world: &mut World) {
+    let receiver = CHANNEL_FRAME_END.1.lock().unwrap();
+    while let Ok(task) = receiver.try_recv() {
         (task.task)(world);
     }
 }
@@ -18,6 +25,7 @@ pub(crate) async fn execute_in_world<
     T: Send + Sync + 'static,
     F: FnOnce(&mut World) -> T + Send + Sync + 'static,
 >(
+    at_start: bool,
     task: F,
 ) -> T {
     let notify = Arc::new(Notify::new());
@@ -33,7 +41,12 @@ pub(crate) async fn execute_in_world<
 
     let world_task = WorldTask { task: boxed_task };
     {
-        let sender = CHANNEL.0.lock().unwrap();
+        let channel = if at_start {
+            &CHANNEL_FRAME_START.0
+        } else {
+            &CHANNEL_FRAME_END.0
+        };
+        let sender = channel.lock().unwrap();
         sender.send(world_task).unwrap();
     }
 
@@ -44,7 +57,11 @@ pub(crate) async fn execute_in_world<
 }
 
 lazy_static::lazy_static! {
-  static ref CHANNEL: (Mutex<std::sync::mpsc::Sender<WorldTask>>, Mutex<std::sync::mpsc::Receiver<WorldTask>>) = {
+  static ref CHANNEL_FRAME_START: (Mutex<std::sync::mpsc::Sender<WorldTask>>, Mutex<std::sync::mpsc::Receiver<WorldTask>>) = {
+    let (rx, tx) = std::sync::mpsc::channel();
+    (Mutex::new(rx), Mutex::new(tx))
+  };
+  static ref CHANNEL_FRAME_END: (Mutex<std::sync::mpsc::Sender<WorldTask>>, Mutex<std::sync::mpsc::Receiver<WorldTask>>) = {
     let (rx, tx) = std::sync::mpsc::channel();
     (Mutex::new(rx), Mutex::new(tx))
   };

@@ -18,9 +18,11 @@ export interface EntityNode {
   entity: number,
   components: Component[],
   children: EntityNode[],
+  name?: string,
 }
 
 
+export const COMPONENT_DEVINFO_TYPE = 'bevy_remote_devtools_plugin::DevInfo';
 export const COMPONENT_CHILDREN_TYPE = 'bevy_transform::components::children::Children';
 export const COMPONENT_PARENT_TYPE = 'bevy_transform::components::parent::Parent';
 export const COMPONENT_PREVIOUS_PARENT_TYPE = 'bevy_transform::components::parent::PreviousParent';
@@ -87,8 +89,14 @@ export function unflattenEntities(entities: Entity[]): EntityNode[] {
   function createEntityNode(id: number): EntityNode {
     const entity = mapEntities.get(id);
     const children = childRelations.get(id);
+    const name = entity
+      .components
+      .find(c => c.type === COMPONENT_DEVINFO_TYPE)
+      ?.struct
+      ?.name as Record<string, unknown>;
     return {
       ...entity,
+      name: name?.value as string || null,
       children: children?.map(id => createEntityNode(id)) || [],
     };
   }

@@ -22,12 +22,22 @@ interface RequestSettings<T> {
   body?: T,
 }
 
+function parameterizeString(value: string, params: Record<string, unknown>): string {
+  let newValue = value.toString();
+  Object.entries(params).forEach(([key, value]) => {
+    newValue = newValue.replace(`{${key}}`, value.toString());
+  });
+  return newValue;
+}
+
 export async function doApiRequest<T, S = void>(
   host: string,
   endpoint: string,
-  settings: RequestSettings<S>
+  settings: RequestSettings<S>,
+  params: Record<string, unknown> = {},
 ): Promise<T> {
-  const request = await fetch(`http://${host}${endpoint}`, {
+  const parametizedEndpoint = parameterizeString(endpoint, params);
+  const request = await fetch(`http://${host}${parametizedEndpoint}`, {
     method: settings.method,
     mode: 'cors',
     headers: settings.body ? {
@@ -40,7 +50,8 @@ export async function doApiRequest<T, S = void>(
 
 interface RequestOutput<T> {
   data?: T,
-  refetch: () => void,
+  refetch: (params?: Record<string, unknown>) => void,
+  isFetching: boolean,
 }
 
 export function useDoApiRequest(): <T, S>(endpoint: string, settings: RequestSettings<S>) => Promise<T> {
@@ -53,23 +64,37 @@ export function useDoApiRequest(): <T, S>(endpoint: string, settings: RequestSet
 export function useApiRequest<T, S>(
   endpoint: string,
   settings: RequestSettings<S>,
-  deps: React.DependencyList = [],
+  initialParams: Record<string, unknown> = {},
 ): RequestOutput<T> {
   const [data, setData] = useState<T>(null);
+  const [params, setParams] = useState<Record<string, unknown>>(initialParams);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const host = useApiHost();
 
-  const fetch = async () => {
-    const output = await doApiRequest<T, S>(host, endpoint, settings);
+  const fetch = async (newParams = {}) => {
+    if (!host) {
+      setData(null);
+      return;
+    }
+
+    setIsFetching(true);
+    const mergedParams = { ...params, ...newParams };
+    setParams(mergedParams);
+    const output = await doApiRequest<T, S>(host, endpoint, settings, mergedParams);
     setData(output);
+    setIsFetching(false);
   };
 
   useEffect(() => {
-    fetch();
+    if (host) {
+      fetch();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [host, ...deps]);
+  }, [host]);
 
   return {
     data,
+    isFetching,
     refetch: fetch,
   }
 }

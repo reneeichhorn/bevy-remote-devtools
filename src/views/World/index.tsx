@@ -84,7 +84,7 @@ export function renderEntityNode(
     <StyledTreeItem 
       key={entity.entity} 
       nodeId={entity.entity.toString()} 
-      label={`Entity (${entity.entity})`}
+      label={`Entity${entity.name ? `::${entity.name}` : ''} (${entity.entity})`}
     >
       {entity.components
         .filter(component => !HIERARCHY_COMPONENT_TYPES.includes(component.type))

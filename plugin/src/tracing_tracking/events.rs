@@ -1,47 +1,43 @@
 use std::{
     collections::{HashMap, VecDeque},
-    sync::{atomic::*, Mutex},
+    marker::PhantomData,
+    sync::Mutex,
     time::SystemTime,
 };
 
-use bevy::utils::tracing::{field::Visit, span::*, *};
+use bevy::{log::Level, utils::tracing::Subscriber};
 use chrono::{DateTime, Utc};
 use rweb::Schema;
 use serde::Serialize;
+use tracing_subscriber::{field::Visit, registry::LookupSpan, Layer};
 
-pub struct TracingSubscriber {
-    next_id: AtomicUsize,
+pub struct EventLayer<S>
+where
+    S: Subscriber + for<'span> LookupSpan<'span> + Send + Sync,
+{
+    _inner: PhantomData<S>,
 }
 
-pub(crate) fn register() {
-    bevy::utils::tracing::subscriber::set_global_default(TracingSubscriber {
-        next_id: AtomicUsize::new(1),
-    })
-    .unwrap();
-}
-
-#[derive(Serialize, Debug, Schema, Clone)]
-pub(crate) struct StoredEvent {
-    target: String,
-    time: DateTime<Utc>,
-    record: StoredRecord,
-}
-
-const MAX_EVENTS: usize = 300;
-
-lazy_static::lazy_static! {
-  pub(crate) static ref STORED_EVENTS: Mutex<VecDeque<StoredEvent>> = {
-    Mutex::new(VecDeque::with_capacity(MAX_EVENTS))
-  };
-}
-
-impl Subscriber for TracingSubscriber {
-    fn new_span(&self, _attrs: &Attributes<'_>) -> Id {
-        let id = self.next_id.fetch_add(1, Ordering::Relaxed);
-        Id::from_u64(id as u64)
+impl<S> EventLayer<S>
+where
+    S: Subscriber + for<'span> LookupSpan<'span> + Send + Sync,
+{
+    pub fn new() -> Self {
+        Self {
+            _inner: PhantomData,
+        }
     }
+}
 
-    fn event(&self, event: &Event<'_>) {
+impl<S> Layer<S> for EventLayer<S>
+where
+    S: Subscriber + for<'span> LookupSpan<'span> + Send + Sync,
+{
+    fn on_event(
+        &self,
+        event: &bevy::utils::tracing::Event<'_>,
+        _ctx: tracing_subscriber::layer::Context<'_, S>,
+    ) {
         if event.metadata().target().contains("wgpu")
             || event.metadata().target().contains("warp")
             || event.metadata().target().contains("hyper")
@@ -65,20 +61,22 @@ impl Subscriber for TracingSubscriber {
             });
         }
     }
-
-    fn enabled(&self, _metadata: &Metadata<'_>) -> bool {
-        true
-    }
-
-    fn record(&self, _span: &span::Id, _values: &span::Record<'_>) {}
-
-    fn record_follows_from(&self, _span: &span::Id, _follows: &span::Id) {}
-
-    fn enter(&self, _span: &span::Id) {}
-
-    fn exit(&self, _span: &span::Id) {}
 }
 
+const MAX_EVENTS: usize = 300;
+
+lazy_static::lazy_static! {
+  pub(crate) static ref STORED_EVENTS: Mutex<VecDeque<StoredEvent>> = {
+    Mutex::new(VecDeque::with_capacity(MAX_EVENTS))
+  };
+}
+
+#[derive(Serialize, Debug, Schema, Clone)]
+pub(crate) struct StoredEvent {
+    target: String,
+    time: DateTime<Utc>,
+    record: StoredRecord,
+}
 #[derive(Serialize, Debug, Schema, Clone)]
 pub(crate) struct StoredRecord {
     properties: HashMap<String, String>,
@@ -93,11 +91,15 @@ impl StoredRecord {
 }
 
 impl Visit for StoredRecord {
-    fn record_debug(&mut self, field: &field::Field, value: &dyn std::fmt::Debug) {
+    fn record_debug(
+        &mut self,
+        field: &bevy::utils::tracing::field::Field,
+        value: &dyn std::fmt::Debug,
+    ) {
         self.properties
             .insert(field.to_string(), format!("{:#?}", value));
     }
-    fn record_str(&mut self, field: &field::Field, value: &str) {
+    fn record_str(&mut self, field: &bevy::utils::tracing::field::Field, value: &str) {
         self.properties.insert(field.to_string(), value.to_string());
     }
 }

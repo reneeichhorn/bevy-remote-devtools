@@ -17,7 +17,6 @@ import {
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import PublicIcon from '@mui/icons-material/Public';
@@ -27,6 +26,7 @@ import { Router } from './components/Router';
 import { HashRouter, Link } from 'react-router-dom';
 import { ApiProvider } from './api';
 import { AssetViewerProvider } from './components/AssetViewer';
+import { FrameDiagnostic } from './components/FrameDiagnostic';
 
 const darkTheme = createTheme({
   palette: {
@@ -71,7 +71,7 @@ const Main = styled("main")<MainProps>(({ $shifted, theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
   marginLeft: $shifted ? DRAWER_WIDTH : 0,
-  background: theme.palette.background.default,
+  background: '#2a2a2a',
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.easeOut,
     duration: theme.transitions.duration.enteringScreen,
@@ -105,6 +105,7 @@ export function App(): React.ReactElement {
                     <MenuIcon />
                   </IconButton>
                   <ClientSelect />
+                  <FrameDiagnostic />
                 </Toolbar>
               </StyledAppBar>
 
@@ -129,6 +130,7 @@ export function App(): React.ReactElement {
                     <ListItemText primary="Tracing Events" />
                   </ListItem>
                   <Divider />
+                  {/*
                   <ListItem button>
                     <ListItemIcon>
                       <AccountTreeIcon />
@@ -142,6 +144,7 @@ export function App(): React.ReactElement {
                     <ListItemText primary="Schedule Graph" />
                   </ListItem>
                   <Divider />
+                  */}
                   <ListItem button component={Link} to="/assets">
                     <ListItemIcon>
                       <ViewInArIcon />
@@ -155,7 +158,7 @@ export function App(): React.ReactElement {
                     <ListItemText primary="Entities" />
                   </ListItem>
                   <Divider />
-                  <ListItem button>
+                  <ListItem button component={Link} to="/system-profiler">
                     <ListItemIcon>
                       <AutoGraphIcon/>
                     </ListItemIcon>

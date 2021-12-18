@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Typography from "@mui/material/Typography";
 import { Card, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { useDoApiRequest } from '../api';
+import { useApiRequest } from '../api';
 import moment from 'moment';
 
 interface Properties {
@@ -18,24 +18,19 @@ interface Event {
   record: Record;
 }
 
-const exclusionList = ['bevy_render2::render_phase::draw_state'];
-
 export function EventsView(): React.ReactElement {
-  const [events, setEvents] = useState<Event[]>([]);
-  const apiRequest = useDoApiRequest();
+  const { data: events, refetch } = useApiRequest<Event[], void>('/v1/tracing/events', { method: 'GET' });
 
   useEffect(() => {
-    const request = async () => {
-      const events = await apiRequest<Event[], void>('/v1/tracing/events', { method: 'GET' });
-      setEvents(events.filter(e => !exclusionList.includes(e.target)));
-    };
-    request();
-    const interval = setInterval(request, 2000);
-
-    return () => {
-      clearInterval(interval);
-    };
+    const interval = setInterval(() => {
+      refetch();
+    }, 2000);
+    return () => clearInterval(interval);
   });
+
+  if (!events) {
+    return null;
+  }
 
   return (
     <>
@@ -54,7 +49,9 @@ export function EventsView(): React.ReactElement {
               <TableRow key={i}>
                 <TableCell component="th" scope="row">{moment(event.time).format("L LTS")}</TableCell>
                 <TableCell scope="row">{event.target}</TableCell>
-                <TableCell scope="row">{event.record.properties?.message || ''}</TableCell>
+                <TableCell sx={{ wordBreak: 'break-all' }} scope="row">
+                  {event.record.properties?.message || ''}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

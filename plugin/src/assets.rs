@@ -2,8 +2,8 @@ use std::convert::Infallible;
 
 use bevy::{
     asset::HandleId,
-    prelude::{AssetServer, Assets},
-    render2::mesh::{Indices, Mesh, VertexAttributeValues},
+    prelude::*,
+    render::mesh::{Indices, Mesh, VertexAttributeValues},
 };
 use rweb::{
     reject::{custom, Reject},
@@ -52,7 +52,7 @@ fn get_asset_name(server: &AssetServer, handle: HandleId) -> String {
 #[get("/v1/assets")]
 #[cors(origins("*"))]
 pub(crate) async fn assets() -> Result<Json<Vec<AssetOverview>>, Infallible> {
-    let assets = execute_in_world(|world| {
+    let assets = execute_in_world(true, |world| {
         let mut assets = Vec::new();
         if let Some(server) = world.get_resource::<AssetServer>() {
             if let Some(mesh_assets) = world.get_resource::<Assets<Mesh>>() {
@@ -84,7 +84,7 @@ pub(crate) async fn get_asset_mesh(
     #[json] id: StringHandleId,
 ) -> Result<Json<MeshAsset>, rweb::Rejection> {
     let id: HandleId = id.into();
-    let mesh = execute_in_world(move |world| {
+    let mesh = execute_in_world(true, move |world| {
         let meshes = world.get_resource::<Assets<Mesh>>();
         meshes.map(|meshes| meshes.get(id).cloned()).flatten()
     })

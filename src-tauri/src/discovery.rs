@@ -1,8 +1,6 @@
 use std::{
   collections::HashMap,
-  net::IpAddr,
   sync::{Arc, Mutex},
-  time::Duration,
 };
 
 use simple_mdns_client::MdnsClient;
