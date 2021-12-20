@@ -3,8 +3,11 @@ name = "bevy-remote-devtools-plugin"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+crate-type=["dylib"]
+
 [dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy.git", rev = "7356f1586d74039f840bcfcf24af3e21c23e3c18", features = ["trace","bevy_render", "bevy_pbr"] }
+bevy = { git = "https://github.com/bevyengine/bevy.git", rev = "7356f1586d74039f840bcfcf24af3e21c23e3c18", features = ["trace","bevy_render", "bevy_pbr", "dynamic"] }
 json = "0.12.4"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
@@ -19,3 +22,6 @@ libmdns = "0.6"
 
 [dev-dependencies]
 env_logger = "0.8.4"
+
+[patch.crates-io]
+hyper = { git = "https://github.com/reneeichhorn/hyper.git" }

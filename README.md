@@ -23,13 +23,25 @@ bevy-remote-devtools-plugin = { git = "https://github.com/reneeichhorn/bevy-remo
 ```rust
 app
   .add_plugin(RemoteDevToolsPlugin::new("My App", 3030))
+  // Optional: If you want to see fps and frame time in the tools.
+  .add_plugin(FrameTimeDiagnosticsPlugin::default())
   // RemoteDevToolsPlugin will replace bevys LogPlugin with a similar implementation.
+  // LogSettings Resource can be still used to configure what logs are shown.
   .add_plugins_with(DefaultPlugins, |group| group.disable::<LogPlugin>())
 ```
 
 After starting your application you can now anytime connect with the UI app to your app.
 
 Check the latest github release for binaries of the Tauri UI app or continue reading the readme to build it yourself.
+
+## Compiling with the `dynamic` feature of bevy
+
+In this situation you will likely end up with unresolved symbol errors from the linker. I'm not entirely sure why that happens but it seems to be a problem with rust itself. I'm happy if someone can find a nicer solution but for now the workaround is to remove `cdylib` from `hyper`.
+
+```rust
+[patch.crates-io]
+hyper = { git = "https://github.com/reneeichhorn/hyper.git" }
+```
 
 ## Identify entities
 
