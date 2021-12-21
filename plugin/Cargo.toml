@@ -7,7 +7,7 @@ edition = "2021"
 crate-type=["dylib"]
 
 [dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy.git", rev = "7356f1586d74039f840bcfcf24af3e21c23e3c18", features = ["trace","bevy_render", "bevy_pbr", "dynamic"] }
+bevy = { git = "https://github.com/bevyengine/bevy.git", features = ["trace","bevy_render", "bevy_pbr", "dynamic"] }
 json = "0.12.4"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }

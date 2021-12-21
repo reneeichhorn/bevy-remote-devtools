@@ -20,6 +20,8 @@ Install and configure the plugin in your target bevy app:
 bevy-remote-devtools-plugin = { git = "https://github.com/reneeichhorn/bevy-remote-devtools.git" }
 ```
 
+This targets bevy main branch since 0.6 is still in progress so it is not compatible with 0.5!
+
 ```rust
 app
   .add_plugin(RemoteDevToolsPlugin::new("My App", 3030))
