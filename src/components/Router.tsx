@@ -6,6 +6,7 @@ import { EventsView } from '../views/Events';
 import { WorldView } from '../views/World';
 import { AssetsView } from '../views/Assets';
 import { SystemProfiler } from '../views/SystemProfiler';
+import { RenderGraph } from '../views/RenderGraph';
 
 export function Router(): React.ReactElement {
   const host = useApiHost();
@@ -24,6 +25,7 @@ export function Router(): React.ReactElement {
       <Route path="/world" element={<WorldView />} />
       <Route path="/assets" element={<AssetsView />} />
       <Route path="/system-profiler" element={<SystemProfiler />} />
+      <Route path="/render-graph" element={<RenderGraph />} />
     </Routes>
   );
 }

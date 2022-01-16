@@ -11,8 +11,9 @@ use std::{convert::Infallible, sync::Mutex};
 
 use crate::{
     assets::{assets, get_asset_mesh},
+    render_graph::get_render_graph,
     serialization::NumberToStringSerializer,
-    sync::execute_in_world,
+    sync::{execute_in_world, ExecutionChannel},
     tracing_tracking::{get_tracing_events, trace_frames},
     DevToolsSettings,
 };
@@ -28,7 +29,7 @@ struct Info {
 #[get("/v1/info")]
 #[cors(origins("*"))]
 async fn info() -> Result<Json<Info>, Infallible> {
-    let name = execute_in_world(true, |world| {
+    let name = execute_in_world(ExecutionChannel::FrameStart, |world| {
         let name = world
             .get_resource::<DevToolsSettings>()
             .map(|settings| settings.name.clone())
@@ -62,7 +63,7 @@ struct FrameDiagnostics {
 #[get("/v1/diagnostics/frame")]
 #[cors(origins("*"))]
 async fn diagnostics_frame() -> Result<Json<FrameDiagnostics>, Infallible> {
-    let output = execute_in_world(false, |world| {
+    let output = execute_in_world(ExecutionChannel::FrameEnd, |world| {
         if let Some(diagnostics) = world.get_resource::<Diagnostics>() {
             let fps = diagnostics
                 .get(FrameTimeDiagnosticsPlugin::FPS)
@@ -84,7 +85,7 @@ async fn diagnostics_frame() -> Result<Json<FrameDiagnostics>, Infallible> {
 #[get("/v1/world")]
 #[cors(origins("*"))]
 async fn world() -> Result<String, Infallible> {
-    let json = execute_in_world(true, |world| {
+    let json = execute_in_world(ExecutionChannel::FrameEnd, |world| {
         let type_registry = world.get_resource::<TypeRegistryArc>().unwrap();
         let scene = DynamicScene::from_world(world, type_registry);
         let serializer = SceneSerializer::new(&scene, type_registry);
@@ -98,12 +99,15 @@ async fn world() -> Result<String, Infallible> {
 async fn api_main(port: u16) {
     let (spec, filter) = openapi::spec().build(move || {
         get_tracing_events()
-            .or(info())
-            .or(world())
-            .or(assets())
-            .or(get_asset_mesh())
-            .or(trace_frames())
-            .or(diagnostics_frame())
+            .boxed()
+            .or(get_render_graph().boxed())
+            .or(info().boxed())
+            .or(world().boxed())
+            .or(assets().boxed())
+            .or(get_asset_mesh().boxed())
+            .or(trace_frames().boxed())
+            .or(diagnostics_frame().boxed())
+            .boxed()
     });
 
     let cors = warp::cors()

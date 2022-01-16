@@ -1,6 +1,6 @@
 {
   "name": "bevy-remote-devtools",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "A remote developer tool for bevy applications",
   "keywords": [],
@@ -63,5 +63,14 @@
     "webpack": "^4.43.0",
     "webpack-cli": "3.3.11",
     "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "rete": "^1.4.5",
+    "rete-auto-arrange-plugin": "https://github.com/RemiRigal/auto-arrange-plugin.git#1435ce7c6ac3f79595bd5c6de501723aea85fd9b",
+    "rete-comment-plugin": "^0.7.0-rc.1",
+    "rete-connection-plugin": "^0.9.0",
+    "rete-minimap-plugin": "^0.3.1",
+    "rete-react-render-plugin": "^0.2.1",
+    "rete-readonly-plugin": "^0.4.1"
   }
 }

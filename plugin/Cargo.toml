@@ -1,13 +1,13 @@
 [package]
 name = "bevy-remote-devtools-plugin"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [lib]
 crate-type=["dylib"]
 
 [dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy.git", features = ["trace","bevy_render", "bevy_pbr", "dynamic"] }
+bevy = { version = "0.6", features = ["trace","bevy_render", "bevy_pbr", "dynamic"] }
 json = "0.12.4"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }

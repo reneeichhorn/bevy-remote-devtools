@@ -1,8 +1,8 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\Rene\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add -D @types/lodash
+  C:\Program Files\nodejs\node.exe C:\Users\Rene\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add rete-auto-arrange-plugin
 
 PATH: 
-  C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Python27\;C:\Python27\Scripts;C:\VulkanSDK\1.2.141.2\Bin;C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\bin;C:\Program Files (x86)\Python38-32\Scripts\;C:\Program Files (x86)\Python38-32\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\dotnet\;C:\Program Files\CMake\bin;C:\bin;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files (x86)\NVIDIA Corporation\DDS Utilities;C:\ProgramData\chocolatey\bin;C:\Program Files\OpenJDK\openjdk-8u282-b08\bin;C:\Users\Rene\AppData\Local\Android\Sdk\platform-tools;C:\Program Files (x86)\Gpg4win\..\GnuPG\bin;C:\Program Files\AMD\AMDuProf\bin;C:\Program Files\RenderDoc;C:\Program Files (x86)\Graphic Remedy\gDEBugger\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files\LLVM\bin;C:\Program Files\nodejs\;C:\Users\Rene\.cargo\bin;C:\Users\Rene\AppData\Local\Microsoft\WindowsApps;C:\Users\Rene\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Rene\.dotnet\tools;C:\Program Files (x86)\NVIDIA Corporation\Cg\bin;C:\Users\Rene\AppData\Roaming\npm
+  C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Python27\;C:\Python27\Scripts;C:\VulkanSDK\1.2.141.2\Bin;C:\Program Files\AdoptOpenJDK\jdk-11.0.7.10-hotspot\bin;C:\Program Files (x86)\Python38-32\Scripts\;C:\Program Files (x86)\Python38-32\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\dotnet\;C:\Program Files\CMake\bin;C:\bin;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files (x86)\NVIDIA Corporation\DDS Utilities;C:\ProgramData\chocolatey\bin;C:\Program Files\OpenJDK\openjdk-8u282-b08\bin;C:\Users\Rene\AppData\Local\Android\Sdk\platform-tools;C:\Program Files (x86)\Gpg4win\..\GnuPG\bin;C:\Program Files\AMD\AMDuProf\bin;C:\Program Files\RenderDoc;C:\Program Files (x86)\Graphic Remedy\gDEBugger\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files\LLVM\bin;C:\Program Files\nodejs\;C:\Program Files\Airshipper\;C:\Users\Rene\.cargo\bin;C:\Users\Rene\AppData\Local\Microsoft\WindowsApps;C:\Users\Rene\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Rene\.dotnet\tools;C:\Program Files (x86)\NVIDIA Corporation\Cg\bin;C:\Users\Rene\AppData\Roaming\npm
 
 Yarn version: 
   1.22.10
@@ -18,13 +18,13 @@ Trace:
 
 npm manifest: 
   {
-    "name": "tauri-typescript-react-boilerplate",
-    "version": "1.0.0",
+    "name": "bevy-remote-devtools",
+    "version": "0.2.0",
     "private": true,
-    "description": "A Tauri Typescript React Boilerplate that works out of the box.",
+    "description": "A remote developer tool for bevy applications",
     "keywords": [],
     "license": "MIT",
-    "author": "Nate Adams",
+    "author": "Rene Eichhorn",
     "scripts": {
       "prebuild": "rimraf ./dist",
       "build:fe": "webpack --production",
@@ -82,6 +82,13 @@ npm manifest:
       "webpack": "^4.43.0",
       "webpack-cli": "3.3.11",
       "webpack-dev-server": "^3.11.2"
+    },
+    "dependencies": {
+      "rete": "^1.4.5",
+      "rete-connection-plugin": "^0.9.0",
+      "rete-minimap-plugin": "^0.3.1",
+      "rete-react-render-plugin": "^0.2.1",
+      "rete-readonly-plugin": "^0.4.1"
     }
   }
 
@@ -8360,6 +8367,33 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
     integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
   
+  rete-connection-plugin@^0.9.0:
+    version "0.9.0"
+    resolved "https://registry.yarnpkg.com/rete-connection-plugin/-/rete-connection-plugin-0.9.0.tgz#3a6df36f55493a5c2ea021ae3147a0f0a6ada6ed"
+    integrity sha512-D+H1yAONBBFYXeMkz0sdpDm76XiqcF2N3FduaqMUqcoThocMaFB2O8TX3nJc76ksuYaLYqo/+OLXTxNa+5HQYQ==
+  
+  rete-minimap-plugin@^0.3.1:
+    version "0.3.1"
+    resolved "https://registry.yarnpkg.com/rete-minimap-plugin/-/rete-minimap-plugin-0.3.1.tgz#5c0f8b8bdde8baa819f3f35c0446e4ebf0399071"
+    integrity sha512-B89MwDxz0NBngE9bkf0F9jI++Jn/wsOZll88Xoa7snbBAdziVgmHikroSjiMAWlzwSNmHk7Mzo8DmezsAz46Jg==
+    dependencies:
+      vue "^2.5.17"
+  
+  rete-react-render-plugin@^0.2.1:
+    version "0.2.1"
+    resolved "https://registry.yarnpkg.com/rete-react-render-plugin/-/rete-react-render-plugin-0.2.1.tgz#71a6d73f18f850b85262563f678b40080a7b0e32"
+    integrity sha512-2ZMXUP0v+EiejHVMqdrOmUwyDBHC2UDOJ/pFkElaZL1Kn/E40JZA5yzdBXi6ajYZI2DCzoW5ZBcA2Ihjtur8MQ==
+  
+  rete-readonly-plugin@^0.4.1:
+    version "0.4.1"
+    resolved "https://registry.yarnpkg.com/rete-readonly-plugin/-/rete-readonly-plugin-0.4.1.tgz#bb883f2b880161c5c454b3a54ba6ab45ca2fe942"
+    integrity sha512-kDJFWMVzRL2gowtUOExjb6tMfP4ztjcMS5xou45Y/i4KiHlYmKvxkPyqyWN2DQ8F1+fN+nmG5r/cpkbABOJt6w==
+  
+  rete@^1.4.5:
+    version "1.4.5"
+    resolved "https://registry.yarnpkg.com/rete/-/rete-1.4.5.tgz#57d83ad34694d9ffb5a287fc4a226e97307b9fbe"
+    integrity sha512-Y+Y9tszG//jU1GK2HIVlV+T9JFcLjY95y5K3oPBWLWPtD3puOn949BicC5AYrI0S3VFn3+zu9xTYpeidPI5xqw==
+  
   retry@^0.12.0:
     version "0.12.0"
     resolved "https://registry.yarnpkg.com/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
@@ -9822,6 +9856,11 @@ Lockfile:
     version "1.1.2"
     resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
     integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
+  
+  vue@^2.5.17:
+    version "2.6.14"
+    resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.14.tgz#e51aa5250250d569a3fbad3a8a5a687d6036e235"
+    integrity sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==
   
   watchpack-chokidar2@^2.0.1:
     version "2.0.1"

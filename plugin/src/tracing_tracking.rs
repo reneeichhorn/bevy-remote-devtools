@@ -10,7 +10,7 @@ mod events;
 pub(crate) use chrome::ChromeLayerController;
 pub(crate) use events::*;
 
-use crate::sync::execute_in_world;
+use crate::sync::{execute_in_world, ExecutionChannel};
 
 use self::chrome::ChromeLayer;
 
@@ -40,12 +40,17 @@ pub(crate) async fn trace_frames(n: usize) -> Result<String, Infallible> {
     output += "[";
 
     // Wait for the next frame start and start tracing.
-    let _ = execute_in_world(true, |_| ChromeLayerController::start()).await;
+    let _ = execute_in_world(ExecutionChannel::FrameStart, |_| {
+        ChromeLayerController::start()
+    })
+    .await;
 
     for i in 0..n {
         // Wait for n frame ends.
-        let future_output =
-            execute_in_world(false, move |_| ChromeLayerController::stop(i != n - 1)).await;
+        let future_output = execute_in_world(ExecutionChannel::FrameEnd, move |_| {
+            ChromeLayerController::stop(i != n - 1)
+        })
+        .await;
         output += future_output.await.as_str();
         output += ",\n";
     }

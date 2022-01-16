@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import MenuIcon from '@mui/icons-material/Menu';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
@@ -66,6 +67,8 @@ interface MainProps {
 }
 
 const Main = styled("main")<MainProps>(({ $shifted, theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
   width: $shifted ? `calc(100% - ${DRAWER_WIDTH}px)` : '100%',
   minHeight: 'calc(100vh - 68px)',
   flexGrow: 1,
@@ -130,13 +133,13 @@ export function App(): React.ReactElement {
                     <ListItemText primary="Tracing Events" />
                   </ListItem>
                   <Divider />
-                  {/*
-                  <ListItem button>
+                  <ListItem button component={Link} to="/render-graph">
                     <ListItemIcon>
                       <AccountTreeIcon />
                     </ListItemIcon>
                     <ListItemText primary="Render Graph" />
                   </ListItem>
+                  {/*
                   <ListItem button>
                     <ListItemIcon>
                       <AccountTreeIcon />

@@ -1,8 +1,12 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    render::{RenderApp, RenderStage},
+};
 use sync::*;
 
 mod api;
 mod assets;
+mod render_graph;
 mod serialization;
 mod sync;
 mod tracing_tracking;
@@ -60,6 +64,11 @@ impl Plugin for RemoteDevToolsPlugin {
             execute_world_tasks_begin.exclusive_system(),
         );
         app.add_system_to_stage("devtools_end", execute_world_tasks_end.exclusive_system());
+
+        app.sub_app_mut(RenderApp).add_system_to_stage(
+            RenderStage::Render,
+            execute_world_tasks_render_app.exclusive_system(),
+        );
     }
 }
 

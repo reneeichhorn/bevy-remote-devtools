@@ -17,6 +17,13 @@ pub(crate) fn execute_world_tasks_end(world: &mut World) {
     }
 }
 
+pub(crate) fn execute_world_tasks_render_app(world: &mut World) {
+    let receiver = CHANNEL_RENDER_APP.1.lock().unwrap();
+    while let Ok(task) = receiver.try_recv() {
+        (task.task)(world);
+    }
+}
+
 struct WorldTask {
     task: Box<dyn FnOnce(&mut World) + Send + Sync + 'static>,
 }
@@ -25,7 +32,7 @@ pub(crate) async fn execute_in_world<
     T: Send + Sync + 'static,
     F: FnOnce(&mut World) -> T + Send + Sync + 'static,
 >(
-    at_start: bool,
+    channel: ExecutionChannel,
     task: F,
 ) -> T {
     let notify = Arc::new(Notify::new());
@@ -41,11 +48,12 @@ pub(crate) async fn execute_in_world<
 
     let world_task = WorldTask { task: boxed_task };
     {
-        let channel = if at_start {
-            &CHANNEL_FRAME_START.0
-        } else {
-            &CHANNEL_FRAME_END.0
+        let channel = match channel {
+            ExecutionChannel::FrameStart => &CHANNEL_FRAME_START.0,
+            ExecutionChannel::FrameEnd => &CHANNEL_FRAME_END.0,
+            ExecutionChannel::RenderApp => &CHANNEL_RENDER_APP.0,
         };
+
         let sender = channel.lock().unwrap();
         sender.send(world_task).unwrap();
     }
@@ -65,4 +73,14 @@ lazy_static::lazy_static! {
     let (rx, tx) = std::sync::mpsc::channel();
     (Mutex::new(rx), Mutex::new(tx))
   };
+  static ref CHANNEL_RENDER_APP: (Mutex<std::sync::mpsc::Sender<WorldTask>>, Mutex<std::sync::mpsc::Receiver<WorldTask>>) = {
+    let (rx, tx) = std::sync::mpsc::channel();
+    (Mutex::new(rx), Mutex::new(tx))
+  };
+}
+
+pub(crate) enum ExecutionChannel {
+    FrameStart,
+    FrameEnd,
+    RenderApp,
 }

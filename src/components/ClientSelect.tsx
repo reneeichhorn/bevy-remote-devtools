@@ -78,7 +78,7 @@ export function ClientSelect({ }): React.ReactElement {
       const infoReq = await fetch(`http://${key}/v1/info`);
       const info = await infoReq.json();
       infoCache[key] = info;
-      setManualClients([{ host: manualHost, port: manualPort }]);
+      setManualClients(clients => ([...clients, { host: manualHost, port: manualPort }]));
       setHost(key);
     } catch (err) {
       alert("Failed to connect to target client. Is it running? Try reaching it manually in the browser.");

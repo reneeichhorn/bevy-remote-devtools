@@ -15,9 +15,9 @@ fn main() {
             filter: "wgpu=error,hyper=error,bevy_render=error".to_string(),
             level: Level::DEBUG,
         })
-        .add_plugin(RemoteDevToolsPlugin::new("3D Example", 3030))
         .insert_resource(Msaa { samples: 4 })
         .add_plugins_with(DefaultPlugins, |group| group.disable::<LogPlugin>())
+        .add_plugin(RemoteDevToolsPlugin::new("3D Example", 3030))
         .add_plugin(FrameTimeDiagnosticsPlugin::default())
         .add_startup_system(setup)
         .run();

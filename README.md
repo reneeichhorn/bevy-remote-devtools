@@ -11,16 +11,21 @@ A toolset that allows you to debug / view any bevy application with a tauri base
 - Assets browser that lets you view current loaded Assets (Mesh support only right now)
 - Entity browser where you can see all entities in their nested structure and components.
 - System profiler that allows you to trace `n` frames and outputs execution times.
+- Visualize the current render graph to debug rendering.
 
 ## Usage
 
 Install and configure the plugin in your target bevy app:
 
 ```toml
-bevy-remote-devtools-plugin = { git = "https://github.com/reneeichhorn/bevy-remote-devtools.git" }
+bevy-remote-devtools-plugin = "0.2"
 ```
 
-This targets bevy main branch since 0.6 is still in progress so it is not compatible with 0.5!
+or when targeting bevy main branch:
+
+```toml
+bevy-remote-devtools-plugin = { git = "https://github.com/reneeichhorn/bevy-remote-devtools.git" }
+```
 
 ```rust
 app
@@ -88,3 +93,8 @@ $ yarn build
 ```
 
 Tauri will walk you through the rest.
+
+## Other and similar tools
+
+- [`bevy_mod_debugdump`](https://github.com/jakobhellermann): Tool to dump system schedule and render graph.
+- [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls): Adds multiple editor like features to your bevy app.

@@ -54,5 +54,5 @@ impl ClientDiscovery {
 #[tauri::command]
 pub fn get_clients(state: tauri::State<ClientDiscovery>) -> Vec<Client> {
   let clients = state.clients.lock().unwrap();
-  clients.keys().map(|k| k.clone()).collect::<Vec<_>>()
+  clients.keys().cloned().collect::<Vec<_>>()
 }
