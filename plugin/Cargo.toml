@@ -2,6 +2,9 @@
 name = "bevy-remote-devtools-plugin"
 version = "0.2.0"
 edition = "2021"
+license = "MIT"
+repository = "https://github.com/reneeichhorn/bevy-remote-devtools.git"
+description = "A toolset that allows you to debug / view any bevy application with a tauri based UI. This crate is only the plugin part."
 
 [lib]
 crate-type=["dylib"]
