@@ -10,7 +10,7 @@ description = "A toolset that allows you to debug / view any bevy application wi
 crate-type=["dylib"]
 
 [dependencies]
-bevy = { version = "0.6", features = ["trace","bevy_render", "bevy_pbr", "dynamic"] }
+bevy = { version = "0.6", default-features = false, features = ["trace","bevy_render", "bevy_pbr", "dynamic"] }
 json = "0.12.4"
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
