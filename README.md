@@ -18,7 +18,7 @@ A toolset that allows you to debug / view any bevy application with a tauri base
 Install and configure the plugin in your target bevy app:
 
 ```toml
-bevy-remote-devtools-plugin = "0.2"
+bevy-remote-devtools-plugin = "0.3"
 ```
 
 or when targeting bevy main branch:

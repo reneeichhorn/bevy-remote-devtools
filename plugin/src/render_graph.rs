@@ -92,7 +92,7 @@ pub fn build_render_graph(render_graph: &RenderGraph) -> SubRenderGraph {
             .map(|n| n.to_string())
             .unwrap_or_else(|| "unknown".to_string());
 
-        for edge in &node_state.edges.input_edges {
+        for edge in node_state.edges.input_edges().iter() {
             let source_node = edge.get_input_node().uuid().to_string();
             let sink_node = edge.get_output_node().uuid().to_string();
             let (source_slot, sink_slot) = match edge {
